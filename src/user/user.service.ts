@@ -10,8 +10,15 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  create(user: User): Promise<User> {
+  async create(user: User): Promise<User> {
+    let userResultSet: User;
     this.userRepository.create(user);
-    return this.userRepository.save(user);
+    this.userRepository.hasId;
+    try {
+      userResultSet = await this.userRepository.save(user);
+    } catch (error) {
+      console.log('errorrr', error);
+    }
+    return userResultSet;
   }
 }

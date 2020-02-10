@@ -3,26 +3,26 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Column({ length: 50, unique: true })
-  email: string;
+  email?: string;
 
   @Column({ length: 30, unique: true })
-  username: string;
+  username?: string;
 
   @Column({ length: 30 })
-  name: string;
+  name?: string;
 
   @Column({ length: 50 })
-  lastname: string;
+  lastname?: string;
 
   @Column({ length: 50 })
-  password: string;
+  password?: string;
+
+  @Column({ default: false })
+  isActive?: boolean;
 
   @Column()
-  isActive: boolean;
-
-  @Column()
-  activationToken: string;
+  activationToken?: string;
 }

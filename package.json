@@ -26,6 +26,8 @@
     "@nestjs/passport": "^6.1.1",
     "@nestjs/platform-express": "^6.10.14",
     "@nestjs/typeorm": "^6.2.0",
+    "crypto-random-string": "^3.0.1",
+    "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "pg": "^7.18.1",
     "postgres": "^1.0.2",
