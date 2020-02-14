@@ -14,11 +14,9 @@ export class UserService {
     let userResultSet: User;
     this.userRepository.create(user);
     this.userRepository.hasId;
-    try {
-      userResultSet = await this.userRepository.save(user);
-    } catch (error) {
-      console.log('errorrr', error);
-    }
+    // eslint-disable-next-line prefer-const
+    userResultSet = await this.userRepository.save(user);
+    // \((.*?)\)
     return userResultSet;
   }
 }

@@ -29,16 +29,28 @@ export class AuthService {
   }
 
   async register(user: User): Promise<any> {
-    const response: ResponseApi<User> = {
+    let response: ResponseApi<User> = {
       data: { activationToken: '' },
       statusCode: 0,
       message: 'OK',
     };
     const randomString = cryptoRandomString({ length: 30 });
     user.activationToken = randomString;
-    const userResultSet = await this.usersService.create(user);
-    response.data.activationToken = userResultSet.activationToken;
-    response.data.id = userResultSet.id;
+    try {
+      const userResultSet = await this.usersService.create(user);
+      response.data.activationToken = userResultSet.activationToken;
+      response.data.id = userResultSet.id;
+    } catch (error) {
+      if (error.code === 23505) {
+        console.log(error.code);
+      }
+      response = {
+        data: {},
+        message: 'Sucuedió un error inesperado',
+        statusCode: 504,
+      };
+    }
+
     return response;
   }
 }
