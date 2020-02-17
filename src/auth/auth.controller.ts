@@ -6,9 +6,9 @@ import { AuthService } from './auth.service';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
-  @Post('signin')
-  async signIn(@Req() req: Request) {
+  @Post('signup')
+  async signUp(@Req() req: Request) {
     const user: User = req.body;
-    return await this.authService.register(user);
+    return await this.authService.signUp(user);
   }
 }

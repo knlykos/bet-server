@@ -1,4 +1,4 @@
-export interface ResponseApi<T> {
+export class ResponseApi<T> {
   data: T;
   statusCode: number;
   message: string;

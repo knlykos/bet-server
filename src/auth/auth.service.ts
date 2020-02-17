@@ -4,12 +4,16 @@ import { JwtService } from '@nestjs/jwt';
 import * as cryptoRandomString from 'crypto-random-string';
 import { User } from 'src/entities/user.entity';
 import { ResponseApi } from 'src/models/response.api.model';
+import { MailerService } from '@nest-modules/mailer';
+import { SignUpTemplate } from 'src/models/signup.template.model';
+import { environment } from './../enviroments/environment';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -28,7 +32,8 @@ export class AuthService {
     };
   }
 
-  async register(user: User): Promise<any> {
+  async signUp(user: User): Promise<ResponseApi<User>> {
+    let signUpTemplate: SignUpTemplate;
     let response: ResponseApi<User> = {
       data: { activationToken: '' },
       statusCode: 0,
@@ -40,15 +45,38 @@ export class AuthService {
       const userResultSet = await this.usersService.create(user);
       response.data.activationToken = userResultSet.activationToken;
       response.data.id = userResultSet.id;
-    } catch (error) {
-      if (error.code === 23505) {
-        console.log(error.code);
+      response.data.email = userResultSet.email;
+      response.data.name = userResultSet.name;
+      response.data.lastname = userResultSet.lastname;
+      try {
+        signUpTemplate = {
+          activationURL:
+            environment.apiUrl + '/' + response.data.activationToken,
+          completeName: response.data.name + ' ' + response.data.lastname,
+        };
+
+        await this.mailerService.sendMail({
+          to: response.data.email,
+          from: 'noreply@nkodex.dev',
+          subject: 'Registro exitoso',
+          template: 'signin',
+          context: signUpTemplate,
+        });
+      } catch (error) {
+        console.log(error);
+        response = {
+          data: {},
+          message: 'Sucedio un error inesperado al enviar un email',
+          statusCode: 504,
+        };
       }
+    } catch (error) {
       response = {
         data: {},
-        message: 'Sucuedió un error inesperado',
+        message: error,
         statusCode: 504,
       };
+      console.log(response);
     }
 
     return response;
