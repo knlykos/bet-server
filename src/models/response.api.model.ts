@@ -1,6 +1,6 @@
 export class ResponseApi<T> {
   data: T;
   statusCode: number;
-  message: string;
+  message?: string;
   error?: string;
 }

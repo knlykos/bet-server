@@ -13,10 +13,9 @@ export class UserService {
 
   async create(user: User): Promise<User> {
     let userResultSet: User;
-    await hash(user.password, 'holaTVT', (err: Error, encrypted: string) => {
-      user.password = encrypted;
-      console.log(encrypted);
-    });
+    const hashedPassword = await hash(user.password, 10);
+    console.log(hashedPassword);
+    user.password = hashedPassword;
     try {
       this.userRepository.create(user);
       this.userRepository.hasId;
@@ -44,5 +43,14 @@ export class UserService {
     }
     // \((.*?)\)
     return userResultSet;
+  }
+
+  async verification(activationToken: string) {
+    const user: User = await this.userRepository.findOne({
+      where: { activationToken: activationToken },
+    });
+    user.isActive = true;
+    const userUpdated = await this.userRepository.save(user);
+    console.log(userUpdated);
   }
 }

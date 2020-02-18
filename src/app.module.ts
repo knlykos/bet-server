@@ -15,7 +15,7 @@ import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
       username: 'postgres',
       password: 'bets123',
       type: 'postgres',
-      host: '172.17.0.2',
+      host: '172.17.0.5',
       port: 5432,
       database: 'bets',
       synchronize: true,

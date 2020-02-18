@@ -51,7 +51,9 @@ export class AuthService {
       try {
         signUpTemplate = {
           activationURL:
-            environment.apiUrl + '/' + response.data.activationToken,
+            environment.apiUrl +
+            '/auth/verification?token=' +
+            response.data.activationToken,
           completeName: response.data.name + ' ' + response.data.lastname,
         };
 
@@ -66,19 +68,23 @@ export class AuthService {
         console.log(error);
         response = {
           data: {},
-          message: 'Sucedio un error inesperado al enviar un email',
+          error: 'Sucedio un error inesperado al enviar un email',
           statusCode: 504,
         };
       }
     } catch (error) {
       response = {
         data: {},
-        message: error,
+        error: error,
         statusCode: 504,
       };
       console.log(response);
     }
 
     return response;
+  }
+
+  async verification(token: string) {
+    this.usersService.verification(token);
   }
 }
