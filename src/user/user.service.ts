@@ -46,11 +46,27 @@ export class UserService {
   }
 
   async verification(activationToken: string) {
-    const user: User = await this.userRepository.findOne({
-      where: { activationToken: activationToken },
-    });
-    user.isActive = true;
-    const userUpdated = await this.userRepository.save(user);
-    console.log(userUpdated);
+    let user: User;
+    try {
+      user = await this.userRepository.findOne({
+        where: { activationToken: activationToken },
+      });
+      if (user === undefined) {
+        return false;
+      }
+    } catch (error) {
+      throw `unexpected error`;
+    }
+    try {
+      if (user.isActive === true) {
+      } else {
+        user.isActive = true;
+        const userUpdated = await this.userRepository.save(user);
+        console.log(userUpdated);
+      }
+    } catch (error) {
+      'try again';
+    }
+    return true;
   }
 }

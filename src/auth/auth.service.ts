@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from './../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as cryptoRandomString from 'crypto-random-string';
@@ -85,6 +85,30 @@ export class AuthService {
   }
 
   async verification(token: string) {
-    this.usersService.verification(token);
+    let response: ResponseApi<User>;
+    try {
+      const result = await this.usersService.verification(token);
+      if (result === true) {
+        response = {
+          data: { isActive: result },
+          statusCode: 200,
+          message: `ok`,
+        };
+      } else {
+        response = {
+          data: { isActive: result },
+          statusCode: 403,
+          message: `the token it's incorrect`,
+        };
+      }
+    } catch (error) {
+      response = {
+        data: {},
+        error: error,
+        statusCode: 504,
+      };
+      console.log(error);
+    }
+    return response;
   }
 }
